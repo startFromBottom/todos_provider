@@ -58,6 +58,13 @@ class FilteredTodos {
         break;
     }
 
+    if (todoSearch.state.searchTerm.isNotEmpty) {
+      _filteredTodos = _filteredTodos
+          .where((Todo todo) =>
+              todo.desc.toLowerCase().contains(todoSearch.state.searchTerm))
+          .toList();
+    }
+
     return FilteredTodosState(filteredTodos: _filteredTodos);
   }
 
