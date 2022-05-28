@@ -29,19 +29,18 @@ class FilteredTodosState extends Equatable {
   List<Object> get props => [filteredTodos];
 }
 
-class FilteredTodos with ChangeNotifier {
-  FilteredTodosState _state = FilteredTodosState.initial();
-  FilteredTodosState get state => _state;
+class FilteredTodos {
+  final TodoFilter todoFilter;
+  final TodoSearch todoSearch;
+  final TodoList todoList;
 
-  ///
-  /// 여러번 호출
-  /// 1. 의존하는 값을 처음으로 얻을 때.
-  /// 2. 의존하는 값이 변할 때마다
-  void update(
-    TodoFilter todoFilter,
-    TodoSearch todoSearch,
-    TodoList todoList,
-  ) {
+  FilteredTodos({
+    required this.todoFilter,
+    required this.todoSearch,
+    required this.todoList,
+  });
+
+  FilteredTodosState get state {
     List<Todo> _filteredTodos;
 
     switch (todoFilter.state.filter) {
@@ -59,14 +58,11 @@ class FilteredTodos with ChangeNotifier {
         break;
     }
 
-    if (todoSearch.state.searchTerm.isNotEmpty) {
-      _filteredTodos = _filteredTodos
-          .where(((Todo todo) =>
-              todo.desc.toLowerCase().contains(todoSearch.state.searchTerm)))
-          .toList();
-    }
-
-    _state = _state.copyWith(filteredTodos: _filteredTodos);
-    notifyListeners();
+    return FilteredTodosState(filteredTodos: _filteredTodos);
   }
+
+  ///
+  /// 여러번 호출
+  /// 1. 의존하는 값을 처음으로 얻을 때.
+  /// 2. 의존하는 값이 변할 때마다
 }
