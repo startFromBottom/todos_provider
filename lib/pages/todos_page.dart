@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:todo_provider/models/todos_model.dart';
 import 'package:todo_provider/providers/active_todo_count.dart';
 import 'package:todo_provider/providers/providers.dart';
+import 'package:todo_provider/utils/debounce.dart';
 
 class TodosPage extends StatelessWidget {
   const TodosPage({Key? key}) : super(key: key);
@@ -90,7 +91,8 @@ class _CreateTodoState extends State<CreateTodo> {
 }
 
 class SearchAndFilterTodo extends StatelessWidget {
-  const SearchAndFilterTodo({Key? key}) : super(key: key);
+  SearchAndFilterTodo({Key? key}) : super(key: key);
+  final debounce = Debounce(milliseconds: 1000);
 
   @override
   Widget build(BuildContext context) {
@@ -105,7 +107,9 @@ class SearchAndFilterTodo extends StatelessWidget {
           ),
           onChanged: (String? newSearchTerm) {
             if (newSearchTerm != null) {
-              context.read<TodoSearch>().setSearchTerm(newSearchTerm);
+              debounce.run(() {
+                context.read<TodoSearch>().setSearchTerm(newSearchTerm);
+              });
             }
           },
         ),
